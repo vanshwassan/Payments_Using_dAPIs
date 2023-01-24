@@ -1,0 +1,10 @@
+{
+  "name": "Payments_Using_dAPIs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Vansh Wassan <007blackhacker@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "hardhat": "^2.12.6"
+  }
+}
