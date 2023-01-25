@@ -12,7 +12,6 @@ contract Payments is ERC721, DapiReader, Ownable {
     Counters.Counter private _tokenIdCounter;
 
     IERC20 public WETH;
-    uint totalPayments; // total amount of payments 
     mapping(address => bytes32) public tokenDapiMapping;
     mapping(uint256 => uint256) public TokenIDtoPrice; 
 
@@ -78,6 +77,7 @@ constructor(address _dapiServer, address _WETHAddress) DapiReader(_dapiServer) E
     
     // Function to get the total payments
     function getTotalPayments() view public returns(uint) {
+        uint256 totalPayments = WETH.balanceOf(address(this));
         return totalPayments;
     }
 }
