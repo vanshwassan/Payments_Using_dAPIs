@@ -14,6 +14,7 @@ contract Payments is ERC721, DapiReader, Ownable {
     IERC20 public WETH;
     uint totalPayments; // total amount of payments 
     mapping(address => bytes32) public tokenDapiMapping;
+    mapping(uint256 => uint256) public TokenIDtoPrice; 
 
 constructor(address _dapiServer, address _WETHAddress) DapiReader(_dapiServer) ERC721("Payment Receipt", "PRT") {
         WETH = IERC20(_WETHAddress);
@@ -54,17 +55,26 @@ constructor(address _dapiServer, address _WETHAddress) DapiReader(_dapiServer) E
             (newTokenPrice / 1 ether);
     }
 
+    function makeReceipt(uint256 tokenId, uint256 price) internal returns (uint256) {
+        TokenIDtoPrice[tokenId] = price;
+        return (price);
+    }
+
     // function to make the payment
     function Payment(address token, uint256 _tokenAmount) public returns(uint256) {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
-        uint256 _usdValue = getEthValue(token);
-        uint256 WETHtoUSD = 1;
+        uint256 _usdValue = getEthValue(token) * (_tokenAmount/10**18);
         WETH.transferFrom(msg.sender, address(this), _tokenAmount);
         _safeMint(msg.sender, tokenId);
-        return _usdValue;
+        uint256 receipt = makeReceipt(tokenId, _usdValue);
+        return receipt;
     }
+
     
+    function checkReceipt(uint256 tokenId) public view returns (uint256) {
+        return (TokenIDtoPrice[tokenId]);
+    }
     
     // Function to get the total payments
     function getTotalPayments() view public returns(uint) {
